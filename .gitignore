@@ -1,3 +1,8 @@
+<<<<<<< HEAD
 /node_modules
 .env
+=======
+.env
+/node_modules/
+>>>>>>> 98bfe00f1ebce4f25974e7fa4c24e67c610d22df
 /data
