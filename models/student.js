@@ -8,6 +8,18 @@ const studentSchema = new mongoose.Schema({
     age: {
         type: Number,
         required: true
+    },
+    age: {
+        type: Number,
+        required: true
+    },
+    age: {
+        type: Number,
+        required: true
+    },
+    age: {
+        type: Number,
+        required: true
     }
 });
 
