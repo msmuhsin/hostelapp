@@ -1,7 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import xlsxToJson from "./utils/xlsxtojson.js";
 
 dotenv.config();
 
@@ -14,9 +13,8 @@ mongoose.connect(process.env.MONGO_URI).then(() => {
 
 app.use(express.json());
 
-app.get("/test", (req, res) => {
-    xlsxToJson("./data/sheet.xlsx")
-    res.send("converted");
+app.get("/", (req, res) => {
+    res.send("helloworld");
 });
 
 app.listen(3000, () => {
