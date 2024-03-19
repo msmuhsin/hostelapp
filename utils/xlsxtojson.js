@@ -24,7 +24,7 @@ export default function xlsxToJson(filePath) {
         });
 
         // Store convertedData to file 
-        fs.writeFileSync("./data/convertedSheet2.json", JSON.stringify(convertedData, null, 2));
+        fs.writeFileSync("./data/convertedSheet.json", JSON.stringify(convertedData, null, 2));
 
     } catch (error) {
         console.error(error);
