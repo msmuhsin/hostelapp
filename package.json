@@ -14,7 +14,8 @@
     "mongoose": "^8.2.1",
     "pincode-distance": "^1.0.2",
     "pincode-distance-calculator": "^1.1.1",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "yup": "^1.4.0"
   },
   "keywords": [],
   "author": "",

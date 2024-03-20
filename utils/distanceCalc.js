@@ -4,7 +4,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 
-
 const getPincodeData = async (pincode) => {
     const options1 = {
         method: 'GET',
@@ -17,11 +16,14 @@ const getPincodeData = async (pincode) => {
 
     try {
         const response1 = await axios.request(options1);
+        console.log(response1.data);
+
         return {
             pincode: response1.data[0].pincode,
             lat: response1.data[0].lat,
             lng: response1.data[0].lng
         }
+
 
     } catch (error) {
         console.error(error);
@@ -37,6 +39,7 @@ const calculateDistance = async (pincode1, pincode2) => {
             throw new Error("Invalid pincode");
         }
 
+
         const data = {
             [pincode1Data.pincode]: {
                 latitude: pincode1Data.lat,
@@ -48,6 +51,7 @@ const calculateDistance = async (pincode1, pincode2) => {
             }
         };
 
+
         const distance = calculate(pincode1, pincode2, data);
         return distance;
     } catch (error) {
@@ -56,7 +60,7 @@ const calculateDistance = async (pincode1, pincode2) => {
 }
 
 
-calculateDistance(676523, 676521).then((result) => {
+calculateDistance(676503, 680009).then((result) => {
     console.log(result);
 }).catch((err) => { 
     console.log(err);
