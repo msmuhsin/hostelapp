@@ -1,29 +1,28 @@
-import express from "express";
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-import xlsxToJson from "./utils/xlsxtojson.js";
-import storetodatabase from "./utils/storetodatabase.js";
-dotenv.config();
+import express from 'express'
+import mongoose from 'mongoose'
+import dotenv from 'dotenv'
+import studentRoutes from './routes/student.js'
+dotenv.config()
 
-const app = express();
+const app = express()
 
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("Connected to DB");
+    console.log('Connected to DB')
   })
   .catch((err) => {
-    console.log(err);
-  });
+    console.log(err)
+  })
 
-app.use(express.json());
+app.use(express.json())
 
-storetodatabase();
+app.use('/student', studentRoutes)
 
-app.get("/", (req, res) => {
-  res.send("helloworld");
-});
+app.get('/', (req, res) => {
+  res.send('helloworld')
+})
 
 app.listen(3000, () => {
-  console.log("Server is running on port 3000");
-});
+  console.log('Server is running on port 3000')
+})

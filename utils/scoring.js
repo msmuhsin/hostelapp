@@ -1,23 +1,26 @@
-import StudentModel from "../models/student.js";
-function score(){
-    
- const distance = 0;
- const incomeScore = 0;
- const givenincome = 0;
- const maxincome = 0;
-const admissionScore=0;
- const maxdistance = 0;      
- const cgpa = 0;
-    maxdistance=300;
-       distanceScore= (distance/maxdidstance)*10;
-       incomeScore= 10-(givenincome/maxincome)*10;
-maxincome=1500000;
-const admissionScore1=incomescore*5 + distanceScore*3 + 2*cgpa; //s5,s7,s9
+export default function calculateScore(studentData) {
+  let { distance, income, cgpa, sem } = studentData
 
-const admissionScore2=incomescore*7 + distanceScore*3 ; //s1,pg,s3
+  income = parseInt(income)
+  distance = parseInt(distance)
+  cgpa = parseFloat(cgpa)
+
+  if (!distance || !income || !cgpa || cgpa > 10) return
+
+    try {
+      const maxDistance = 300
+      const maxIncome = 1500000
+
+      const distanceScore = (distance / maxDistance) * 10
+      const incomeScore = 10 - (income / maxIncome) * 10
 
 
-    
-
-
+      if (sem == 'S5' || sem == 'S7' || sem == 'S9') {
+        return incomeScore * 5 + distanceScore * 3 + 2 * cgpa
+      } else {
+        return incomeScore * 7 + distanceScore * 3
+      }
+    } catch (error) {
+      console.error(error)
+    }
 }

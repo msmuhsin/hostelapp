@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const studentSchema = new mongoose.Schema({
   appllNo: {
@@ -25,7 +25,7 @@ const studentSchema = new mongoose.Schema({
   email: {
     type: String,
   },
-  permententAddress: {
+  permenentAddress: {
     type: String,
   },
   presentAddress: {
@@ -65,7 +65,7 @@ const studentSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-});
+})
 
-const Student = mongoose.model("Student", studentSchema);
-export default Student;
+const Student = mongoose.model('Student', studentSchema)
+export default Student
