@@ -42,8 +42,7 @@ router.post('/', async (req, res) => {
     !income ||
     !branch ||
     !sem ||
-    !cgpa ||
-    !score
+    !cgpa 
   ) {
     return res.status(400).json({ message: 'All fields are required' })
   }
