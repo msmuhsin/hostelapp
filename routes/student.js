@@ -1,7 +1,8 @@
 import express from 'express'
 import studentModel from '../models/student.js'
 import calculateScore from '../utils/scoring.js'
-
+// import copyData from '../utils/data_copy.js'
+// import Student_details from '../models/student_details.js'
 const router = express.Router()
 
 router.post('/', async (req, res) => {
@@ -42,7 +43,7 @@ router.post('/', async (req, res) => {
     !income ||
     !branch ||
     !sem ||
-    !cgpa 
+    !cgpa
   ) {
     return res.status(400).json({ message: 'All fields are required' })
   }
@@ -86,13 +87,13 @@ router.get('/', async (req, res) => {
     const StudentData = allStudents[i]
     const studentScore = calculateScore(StudentData)
 
-    if(studentScore != undefined){
-     const updateStudent =  await studentModel.findByIdAndUpdate(
-        { _id: StudentData._id },
-        { score: studentScor(0)}
+    if (studentScore != undefined) {
+      const updateStudent = await studentModel.findByIdAndUpdate(
+        StudentData._id ,
+        { score: parseFloat(studentScore).toFixed(2) },
       )
 
-      console.log(updateStudent);
+      console.log(updateStudent)
     }
   }
 })
