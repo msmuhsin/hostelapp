@@ -1,10 +1,13 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
+import cors from 'cors'
 import studentRoutes from './routes/student.js'
 dotenv.config()
 
 const app = express()
+
+app.use(cors())
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -23,6 +26,8 @@ app.get('/', (req, res) => {
   res.send('helloworld')
 })
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000')
+const Port = process.env.PORT || 3000
+
+app.listen(Port, () => {
+  console.log(`Server is running on port ${Port}`)
 })

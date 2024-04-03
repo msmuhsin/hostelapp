@@ -1,82 +1,107 @@
 import express from 'express'
 import studentModel from '../models/student.js'
 import calculateScore from '../utils/scoring.js'
-// import copyData from '../utils/data_copy.js'
-// import Student_details from '../models/student_details.js'
+
 const router = express.Router()
 
 router.post('/', async (req, res) => {
   const {
-    admNo,
-    regNo,
-    name,
-    gender,
-    dob,
-    mobile,
-    email,
-    permenentaddress,
-    presentaddress,
-    pincode,
-    distance,
-    caste,
-    quota,
-    income,
-    branch,
-    sem,
-    cgpa,
+    Admno,
+    Regno,
+    Name,
+    Gender,
+    DOB,
+    Mobile,
+    Email,
+    PermanentAddress,
+    PresentAddress,
+    PinCode,
+    Distance,
+    Caste,
+    Quota,
+    Income,
+    Branch,
+    Sem,
+    CGPA,
   } = req.body
 
   if (
-    !admNo ||
-    !regNo ||
-    !name ||
-    !gender ||
-    !dob ||
-    !mobile ||
-    !email ||
-    !permenentaddress ||
-    !presentaddress ||
-    !pincode ||
-    !distance ||
-    !caste ||
-    !quota ||
-    !income ||
-    !branch ||
-    !sem ||
-    !cgpa
+    !Admno ||
+    !Regno ||
+    !Name ||
+    !Gender ||
+    !DOB ||
+    !Mobile ||
+    !Email ||
+    !PermanentAddress ||
+    !PresentAddress ||
+    !PinCode ||
+    !Distance ||
+    !Caste ||
+    !Quota ||
+    !Income ||
+    !Branch ||
+    !Sem ||
+    !CGPA
   ) {
-    return res.status(400).json({ message: 'All fields are required' })
+    return res
+      .status(400)
+      .json({ message: 'All fields are required', success: false })
+  }
+
+  const isExistingStudent = await studentModel.findOne({ admNo: Admno })
+
+  if (isExistingStudent) {
+    return res
+      .status(400)
+      .json({
+        message: 'Student already exists cannot register again',
+        success: false,
+      })
+  }
+
+  const isExistingRegno = await studentModel.findOne({ regNo: Regno })
+
+  if (isExistingRegno) {
+    return res
+      .status(400)
+      .json({
+        message: 'Student already exists cannot register again',
+        success: false,
+      })
   }
 
   try {
     const student = new studentModel({
-      appllNo: '1',
-      admNo: admNo,
-      regNo: regNo,
-      name: name,
-      gender: gender,
-      dob: dob,
-      mobile: mobile,
-      email: email,
-      permenentAddress: permenentaddress,
-      presentAddress: presentaddress,
-      pincode: pincode,
-      distance: distance,
-      caste: caste,
-      quota: quota,
-      income: income,
-      branch: branch,
-      sem: sem,
-      cgpa: cgpa,
+      admNo: Admno,
+      regNo: Regno,
+      name: Name,
+      dob: DOB,
+      mobileNo: Mobile,
+      email: Email,
+      permanentAddress: PermanentAddress,
+      presentAddress: PresentAddress,
+      permanentAddress: PresentAddress,
+      pinCode: PinCode,
+      distance: Distance,
+      caste: Caste,
+      qouta: Quota,
+      income: Income,
+      branch: Branch,
+      sem: Sem,
+      cgpa: CGPA,
     })
 
     await student.save()
 
-    res
-      .status(201)
-      .json({ message: 'Student created successfully', data: student })
+    res.status(201).json({
+      message: 'Student created successfully',
+      data: student,  
+      success: true,
+    })
   } catch (error) {
     console.log(error)
+    res.status(500).json({ message: error.message, success: false })
   }
 })
 
@@ -89,8 +114,8 @@ router.get('/', async (req, res) => {
 
     if (studentScore != undefined) {
       const updateStudent = await studentModel.findByIdAndUpdate(
-        StudentData._id ,
-        { score: parseFloat(studentScore).toFixed(2) },
+        StudentData._id,
+        { score: parseFloat(studentScore).toFixed(2) }
       )
 
       console.log(updateStudent)
