@@ -5,8 +5,7 @@ import calculateScore from '../utils/scoring.js'
 const router = express.Router()
 
 router.post('/', async (req, res) => {
-
-  console.log(req.body);
+  console.log(req.body)
 
   const {
     Admno,
@@ -27,8 +26,6 @@ router.post('/', async (req, res) => {
     Sem,
     CGPA,
   } = req.body
-
-
 
   if (
     !Admno ||
@@ -72,6 +69,8 @@ router.post('/', async (req, res) => {
     })
   }
 
+  const studentScore = calculateScore(req.body)
+
   try {
     const student = new studentModel({
       admNo: Admno,
@@ -91,6 +90,7 @@ router.post('/', async (req, res) => {
       branch: Branch,
       sem: Sem,
       cgpa: CGPA,
+      score: parseFloat(studentScore).toFixed(2),
     })
 
     await student.save()

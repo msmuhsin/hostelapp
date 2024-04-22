@@ -1,26 +1,25 @@
 export default function calculateScore(studentData) {
-  let { distance, income, cgpa, sem } = studentData
+  let { Distance, Income, CGPA, Sem } = studentData
 
-  income = parseInt(income)
-  distance = parseInt(distance)
-  cgpa = parseFloat(cgpa)
+  Income = parseInt(Income)
+  Distance = parseInt(Distance)
+  CGPA = parseFloat(CGPA)
 
-  if (!distance || !income || !cgpa || cgpa > 10) return
+  if (!Distance || !Income || !CGPA || CGPA > 10) return
 
-    try {
-      const maxDistance = 300
-      const maxIncome = 1500000
+  try {
+    const maxDistance = 300
+    const maxIncome = 1500000
 
-      const distanceScore = (distance / maxDistance) * 10
-      const incomeScore = 10 - (income / maxIncome) * 10
+    const distanceScore = (Distance / maxDistance) * 10
+    const incomeScore = 10 - (Income / maxIncome) * 10
 
-
-      if (sem == 'S5' || sem == 'S7' || sem == 'S9') {
-        return incomeScore * 5 + distanceScore * 3 + 2 * cgpa
-      } else {
-        return incomeScore * 7 + distanceScore * 3
-      }
-    } catch (error) {
-      console.error(error)
+    if (Sem == 'S5' || Sem == 'S7' || Sem == 'S9') {
+      return incomeScore * 5 + distanceScore * 3 + 2 * CGPA
+    } else {
+      return incomeScore * 7 + distanceScore * 3
     }
+  } catch (error) {
+    console.error(error)
+  }
 }
