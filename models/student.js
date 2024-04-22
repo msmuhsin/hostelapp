@@ -1,8 +1,9 @@
 import mongoose from 'mongoose'
 
 const studentSchema = new mongoose.Schema({
-  appllNo: {
+  applNo: {
     type: Number,
+    unique: true,
   },
   admNo: {
     type: String,
@@ -74,19 +75,17 @@ studentSchema.pre('save', async function (next) {
   }
 
   try {
-    // Find the highest application number
     const highestApplication = await this.constructor
       .findOne({}, { applNo: 1 })
       .sort({ applNo: -1 })
       .limit(1)
 
-    // Increment the highest application number by 1
     const nextApplicationNo = highestApplication
       ? highestApplication.applNo + 1
-      : 1
+      : 1000``
 
-    // Set the application number for the current document
     this.applNo = nextApplicationNo
+
     next()
   } catch (error) {
     next(error)
