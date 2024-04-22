@@ -106,6 +106,85 @@ router.post('/', async (req, res) => {
   }
 })
 
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+
+    const {
+      Name,
+      Gender,
+      DOB,
+      Mobile,
+      Email,
+      PermanentAddress,
+      PresentAddress,
+      PinCode,
+      Distance,
+      Caste,
+      Quota,
+      Income,
+      Branch,
+      Sem,
+      CGPA,
+    } = req.body
+
+    if (!id) {
+      return res
+        .status(400)
+        .json({ message: 'Student id is required', success: false })
+    }
+
+    if (!Income || !Distance || !CGPA || !Sem) {
+      return res
+        .status(400)
+        .json({ message: 'All fields are required', success: false })
+    }
+
+    const studentScore = calculateScore(req.body)
+
+    const updatedStudent = await studentModel.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          income: Income,
+          cgpa: CGPA,
+          sem: Sem,
+          distance: Distance,
+          score: parseFloat(studentScore).toFixed(2),
+          branch: Branch,
+          name: Name,
+          caste: Caste,
+          quota: Quota,
+          pincode: PinCode,
+          presentAddress: PresentAddress,
+          permanentAddress: PermanentAddress,
+          email: Email,
+          mobileNo: Mobile,
+          dob: DOB,
+          gender: Gender,
+        },
+      },
+      {
+        new: true,
+      }
+    )
+
+    console.log(updatedStudent)
+
+    if (!updatedStudent) {
+      return res
+        .status(400)
+        .json({ message: 'Student not found', success: false })
+    }
+
+    res
+      .status(200)
+      .json({ message: 'Student updated successfully', success: true })
+  } catch (error) {
+    res.status(500).json({ message: error.message, success: false })
+  }
+})
+
 router.get('/', async (req, res) => {
   try {
     const allStudents = await studentModel.find({})
