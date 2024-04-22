@@ -82,7 +82,7 @@ studentSchema.pre('save', async function (next) {
 
     const nextApplicationNo = highestApplication
       ? highestApplication.applNo + 1
-      : 1000``
+      : 1000
 
     this.applNo = nextApplicationNo
 
