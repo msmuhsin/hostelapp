@@ -5,6 +5,9 @@ import calculateScore from '../utils/scoring.js'
 const router = express.Router()
 
 router.post('/', async (req, res) => {
+
+  console.log(req.body);
+
   const {
     Admno,
     Regno,
@@ -24,6 +27,8 @@ router.post('/', async (req, res) => {
     Sem,
     CGPA,
   } = req.body
+
+
 
   if (
     !Admno ||
@@ -52,23 +57,19 @@ router.post('/', async (req, res) => {
   const isExistingStudent = await studentModel.findOne({ admNo: Admno })
 
   if (isExistingStudent) {
-    return res
-      .status(400)
-      .json({
-        message: 'Student already exists cannot register again',
-        success: false,
-      })
+    return res.status(400).json({
+      message: 'Student already exists cannot register again',
+      success: false,
+    })
   }
 
   const isExistingRegno = await studentModel.findOne({ regNo: Regno })
 
   if (isExistingRegno) {
-    return res
-      .status(400)
-      .json({
-        message: 'Student already exists cannot register again',
-        success: false,
-      })
+    return res.status(400).json({
+      message: 'Student already exists cannot register again',
+      success: false,
+    })
   }
 
   try {
@@ -81,11 +82,11 @@ router.post('/', async (req, res) => {
       email: Email,
       permanentAddress: PermanentAddress,
       presentAddress: PresentAddress,
-      permanentAddress: PresentAddress,
-      pinCode: PinCode,
+      pincode: PinCode,
       distance: Distance,
       caste: Caste,
-      qouta: Quota,
+      gender: Gender,
+      quota: Quota,
       income: Income,
       branch: Branch,
       sem: Sem,
@@ -96,7 +97,7 @@ router.post('/', async (req, res) => {
 
     res.status(201).json({
       message: 'Student created successfully',
-      data: student,  
+      data: student,
       success: true,
     })
   } catch (error) {
@@ -106,21 +107,26 @@ router.post('/', async (req, res) => {
 })
 
 router.get('/', async (req, res) => {
-  const allStudents = await studentModel.find({})
-
-  for (let i = 0; i < allStudents.length; i++) {
-    const StudentData = allStudents[i]
-    const studentScore = calculateScore(StudentData)
-
-    if (studentScore != undefined) {
-      const updateStudent = await studentModel.findByIdAndUpdate(
-        StudentData._id,
-        { score: parseFloat(studentScore).toFixed(2) }
-      )
-
-      console.log(updateStudent)
-    }
+  try {
+    const allStudents = await studentModel.find({})
+    res.status(200).json({ allStudents, success: true })
+  } catch (error) {
+    res.status(500).json({ message: error.message, success: false })
   }
+
+  // for (let i = 0; i < allStudents.length; i++) {
+  //   const StudentData = allStudents[i]
+  //   const studentScore = calculateScore(StudentData)
+
+  //   if (studentScore != undefined) {
+  //     const updateStudent = await studentModel.findByIdAndUpdate(
+  //       StudentData._id,
+  //       { score: parseFloat(studentScore).toFixed(2) }
+  //     )
+
+  //     console.log(updateStudent)
+  //   }
+  // }
 })
 
 export default router

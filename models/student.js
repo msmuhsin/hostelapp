@@ -25,7 +25,7 @@ const studentSchema = new mongoose.Schema({
   email: {
     type: String,
   },
-  permenentAddress: {
+  permanentAddress: {
     type: String,
   },
   presentAddress: {
@@ -40,7 +40,7 @@ const studentSchema = new mongoose.Schema({
   caste: {
     type: String,
   },
-  qouta: {
+  quota: {
     type: String,
   },
   income: {
@@ -66,6 +66,33 @@ const studentSchema = new mongoose.Schema({
     default: false,
   },
 })
+
+studentSchema.pre('save', async function (next) {
+  // Check if the document is new or being updated
+  if (!this.isNew) {
+    return next()
+  }
+
+  try {
+    // Find the highest application number
+    const highestApplication = await this.constructor
+      .findOne({}, { applNo: 1 })
+      .sort({ applNo: -1 })
+      .limit(1)
+
+    // Increment the highest application number by 1
+    const nextApplicationNo = highestApplication
+      ? highestApplication.applNo + 1
+      : 1
+
+    // Set the application number for the current document
+    this.applNo = nextApplicationNo
+    next()
+  } catch (error) {
+    next(error)
+  }
+})
+
 
 const Student = mongoose.model('Student', studentSchema)
 export default Student
