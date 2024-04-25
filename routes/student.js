@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { application } from 'express'
 import studentModel from '../models/student.js'
 import calculateScore from '../utils/scoring.js'
 
@@ -113,6 +113,9 @@ router.get('/', async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message, success: false })
   }
+
+  
+ 
 
   // for (let i = 0; i < allStudents.length; i++) {
   //   const StudentData = allStudents[i]

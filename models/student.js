@@ -62,6 +62,10 @@ const studentSchema = new mongoose.Schema({
   roomNo: {
     type: Number,
   },
+  allotted: {
+    type: Boolean,
+    default: false,
+  },
   dataError: {
     type: Boolean,
     default: false,
