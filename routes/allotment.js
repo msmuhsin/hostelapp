@@ -13,6 +13,29 @@ function allocateStudents(students, seats) {
   return allocatedStudents
 }
 
+function calculateSemesterSeatDistribution(totalSeats) {
+  const seatsPerSemester = Math.round(totalSeats / 5)
+  const seatDistribution = {
+    S1: seatsPerSemester,
+    S3: seatsPerSemester,
+    S5: seatsPerSemester,
+    S7: seatsPerSemester,
+    PG: totalSeats - seatsPerSemester * 4,
+  }
+  return seatDistribution
+}
+
+function calculateCategorySeatDistribution(totalSeats) {
+  const seatsPerCategory = Math.round(totalSeats / 4)
+  const categoryDistribution = {
+    SC: seatsPerCategory,
+    ST: seatsPerCategory,
+    PH: seatsPerCategory,
+    BPL: totalSeats - seatsPerCategory * 3,
+  }
+  return categoryDistribution
+}
+
 router.get('/', async (req, res) => {
   try {
     const allotment = await allotmentModel.find()
@@ -38,7 +61,6 @@ router.post('/allocate', async (req, res) => {
 
     await newAllotment.save()
 
-    //Id of the newly created allotment
     const AllotmentId = newAllotment._id
 
     const HostelTypes = ['MH', 'LH']
@@ -49,10 +71,6 @@ router.post('/allocate', async (req, res) => {
     let seatDataPGMH = {}
     let seatDataPGLH = {}
 
-
-
-    //? Calculation of Seats for UG and PG
-
     for (const hostel_type of HostelTypes) {
       let total_SC_ST_PH_BPL_seats = 0
 
@@ -62,57 +80,61 @@ router.post('/allocate', async (req, res) => {
         total_SC_ST_PH_BPL_seats = LH.SC_ST_PH_BPL.totalSeats
       }
 
+      const seatData_SC_ST_PH_BPL_Of_Semester =
+        calculateSemesterSeatDistribution(total_SC_ST_PH_BPL_seats)
+
       //Divided into 5 parts S1, S3, S5, S7, PG
-      const total_no_SC_ST_PH_BPL_of_S1 = Math.round(
-        total_SC_ST_PH_BPL_seats / 5
+      const total_no_SC_ST_PH_BPL_of_S1 = seatData_SC_ST_PH_BPL_Of_Semester.S1
+      const total_no_SC_ST_PH_BPL_of_S3 = seatData_SC_ST_PH_BPL_Of_Semester.S3
+      const total_no_SC_ST_PH_BPL_of_S5 = seatData_SC_ST_PH_BPL_Of_Semester.S5
+      const total_no_SC_ST_PH_BPL_of_S7 = seatData_SC_ST_PH_BPL_Of_Semester.S7
+      const total_no_SC_ST_PH_BPL_of_PG = seatData_SC_ST_PH_BPL_Of_Semester.PG
+
+      const seatData_S1 = calculateCategorySeatDistribution(
+        total_no_SC_ST_PH_BPL_of_S1
       )
-      const total_no_SC_ST_PH_BPL_of_S3 = Math.round(
-        total_SC_ST_PH_BPL_seats / 5
+
+      const seatData_S3 = calculateCategorySeatDistribution(
+        total_no_SC_ST_PH_BPL_of_S3
       )
-      const total_no_SC_ST_PH_BPL_of_S5 = Math.round(
-        total_SC_ST_PH_BPL_seats / 5
+
+      const seatData_S5 = calculateCategorySeatDistribution(
+        total_no_SC_ST_PH_BPL_of_S5
       )
-      const total_no_SC_ST_PH_BPL_of_PG = Math.round(
-        total_SC_ST_PH_BPL_seats / 5
+
+      const seatData_S7 = calculateCategorySeatDistribution(
+        total_no_SC_ST_PH_BPL_of_S7
       )
-      const total_no_SC_ST_PH_BPL_of_S7 =
-        total_SC_ST_PH_BPL_seats -
-        (total_no_SC_ST_PH_BPL_of_S1 +
-          total_no_SC_ST_PH_BPL_of_S3 +
-          total_no_SC_ST_PH_BPL_of_S5 +
-          total_no_SC_ST_PH_BPL_of_PG)
 
       //S1
       const S1Seats = hostel_type == 'MH' ? MH.S1.totalSeats : LH.S1.totalSeats
-      const SC_Seats_S1 = Math.round(total_no_SC_ST_PH_BPL_of_S1 / 4)
-      const PH_Seats_S1 = Math.round(total_no_SC_ST_PH_BPL_of_S1 / 4)
-      const ST_Seats_S1 = Math.round(total_no_SC_ST_PH_BPL_of_S1 / 4)
-      const BPL_Seats_S1 =
-        total_no_SC_ST_PH_BPL_of_S1 - (ST_Seats_S1 + PH_Seats_S1 + SC_Seats_S1)
+      const SC_Seats_S1 = seatData_S1.SC
+      const PH_Seats_S1 = seatData_S1.PH
+      const ST_Seats_S1 = seatData_S1.ST
+      const BPL_Seats_S1 = seatData_S1.BPL
 
       //S3
       const S3Seats = hostel_type == 'MH' ? MH.S3.totalSeats : LH.S3.totalSeats
-      const SC_Seats_S3 = Math.round(total_no_SC_ST_PH_BPL_of_S3 / 4)
-      const PH_Seats_S3 = Math.round(total_no_SC_ST_PH_BPL_of_S3 / 4)
-      const ST_Seats_S3 = Math.round(total_no_SC_ST_PH_BPL_of_S3 / 4)
-      const BPL_Seats_S3 =
-        total_no_SC_ST_PH_BPL_of_S3 - (ST_Seats_S3 + PH_Seats_S3 + SC_Seats_S3)
+      const SC_Seats_S3 = seatData_S3.SC
+      const PH_Seats_S3 = seatData_S3.PH
+      const ST_Seats_S3 = seatData_S3.ST
+      const BPL_Seats_S3 = seatData_S3.BPL
 
       //S5
       const S5Seats = hostel_type == 'MH' ? MH.S5.totalSeats : LH.S5.totalSeats
-      const SC_Seats_S5 = Math.round(total_no_SC_ST_PH_BPL_of_S5 / 4)
-      const PH_Seats_S5 = Math.round(total_no_SC_ST_PH_BPL_of_S5 / 4)
-      const ST_Seats_S5 = Math.round(total_no_SC_ST_PH_BPL_of_S5 / 4)
-      const BPL_Seats_S5 =
-        total_no_SC_ST_PH_BPL_of_S5 - (ST_Seats_S5 + PH_Seats_S5 + SC_Seats_S5)
+      const SC_Seats_S5 = seatData_S5.SC
+      const PH_Seats_S5 = seatData_S5.PH
+      const ST_Seats_S5 = seatData_S5.ST
+      const BPL_Seats_S5 = seatData_S5.BPL
 
       //S7
       const S7Seats = hostel_type == 'MH' ? MH.S7.totalSeats : LH.S7.totalSeats
-      const SC_Seats_S7 = Math.round(total_no_SC_ST_PH_BPL_of_S7 / 4)
-      const PH_Seats_S7 = Math.round(total_no_SC_ST_PH_BPL_of_S7 / 4)
-      const ST_Seats_S7 = Math.round(total_no_SC_ST_PH_BPL_of_S7 / 4)
-      const BPL_Seats_S7 =
-        total_no_SC_ST_PH_BPL_of_S7 - (ST_Seats_S7 + PH_Seats_S7 + SC_Seats_S7)
+      const SC_Seats_S7 = seatData_S7.SC
+      const PH_Seats_S7 = seatData_S7.PH
+      const ST_Seats_S7 = seatData_S7.ST
+      const BPL_Seats_S7 = seatData_S7.BPL
+
+
 
       if (hostel_type === 'MH') {
         seatDataUGMH = {
@@ -178,7 +200,7 @@ router.post('/allocate', async (req, res) => {
         }
       }
 
-    //PG
+      //PG
       const PGSeats = hostel_type == 'MH' ? MH.PG.totalSeats : LH.PG.totalSeats
 
       const total_no_of_SC_Seats_in_PG = Math.round(
