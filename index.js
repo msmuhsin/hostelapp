@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import studentRoutes from './routes/student.js'
+import userRoutes from './routes/user.js'
 dotenv.config()
 
 const app = express()
@@ -21,6 +22,7 @@ mongoose
 app.use(express.json())
 
 app.use('/student', studentRoutes)
+app.use('/user', userRoutes)
 
 app.get('/', (req, res) => {
   res.send('helloworld')
