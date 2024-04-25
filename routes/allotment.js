@@ -14,7 +14,8 @@ function allocateStudents(students, seats) {
 }
 
 function calculateSemesterSeatDistribution(totalSeats) {
-  const seatsPerSemester = Math.round(totalSeats / 5)
+  const seatsPerSemester = Math.floor(totalSeats / 5);
+
   const seatDistribution = {
     S1: seatsPerSemester,
     S3: seatsPerSemester,
@@ -26,7 +27,7 @@ function calculateSemesterSeatDistribution(totalSeats) {
 }
 
 function calculateCategorySeatDistribution(totalSeats) {
-  const seatsPerCategory = Math.round(totalSeats / 4)
+  const seatsPerCategory = Math.floor(totalSeats / 4)
   const categoryDistribution = {
     SC: seatsPerCategory,
     ST: seatsPerCategory,
@@ -203,44 +204,44 @@ router.post('/allocate', async (req, res) => {
       //PG
       const PGSeats = hostel_type == 'MH' ? MH.PG.totalSeats : LH.PG.totalSeats
 
-      const total_no_of_SC_Seats_in_PG = Math.round(
+      const total_no_of_SC_Seats_in_PG = Math.floor(
         total_no_SC_ST_PH_BPL_of_PG / 4
       )
-      const total_no_of_PH_Seats_in_PG = Math.round(
+      const total_no_of_PH_Seats_in_PG = Math.floor(
         total_no_SC_ST_PH_BPL_of_PG / 4
       )
-      const total_no_of_ST_Seats_in_PG = Math.round(
+      const total_no_of_ST_Seats_in_PG = Math.floor(
         total_no_SC_ST_PH_BPL_of_PG / 4
       )
       const total_no_of_BPL_Seats_in_PG =
         total_no_SC_ST_PH_BPL_of_PG - (ST_Seats_PG + PH_Seats_PG + SC_Seats_PG)
 
-      const M1_Seats = Math.ceil(PGSeats / 3)
-      const M3_Seats = Math.ceil(PGSeats / 3)
+      const M1_Seats = Math.floor(PGSeats / 3)
+      const M3_Seats = Math.floor(PGSeats / 3)
       const S9_Seats = PGSeats - (M1_Seats + M3_Seats)
 
       //M1 , M3, S9 :SC
-      const SC_Seats_M1 = Math.round(total_no_of_SC_Seats_in_PG / 3)
-      const SC_Seats_M3 = Math.round(total_no_of_SC_Seats_in_PG / 3)
+      const SC_Seats_M1 = Math.floor(total_no_of_SC_Seats_in_PG / 3)
+      const SC_Seats_M3 = Math.floor(total_no_of_SC_Seats_in_PG / 3)
       const SC_Seats_S9 =
         total_no_of_SC_Seats_in_PG - (SC_Seats_M1 + SC_Seats_M3)
 
       //M1, M3, S9 :ST
 
-      const ST_Seats_M1 = Math.round(total_no_of_ST_Seats_in_PG / 3)
-      const ST_Seats_M3 = Math.round(total_no_of_ST_Seats_in_PG / 3)
+      const ST_Seats_M1 = Math.floor(total_no_of_ST_Seats_in_PG / 3)
+      const ST_Seats_M3 = Math.floor(total_no_of_ST_Seats_in_PG / 3)
       const ST_Seats_S9 =
         total_no_of_ST_Seats_in_PG - (ST_Seats_M1 + ST_Seats_M3)
 
       //M1, M3, S9 :PH
-      const PH_Seats_M1 = Math.round(total_no_of_PH_Seats_in_PG / 3)
-      const PH_Seats_M3 = Math.round(total_no_of_PH_Seats_in_PG / 3)
+      const PH_Seats_M1 = Math.floor(total_no_of_PH_Seats_in_PG / 3)
+      const PH_Seats_M3 = Math.floor(total_no_of_PH_Seats_in_PG / 3)
       const PH_Seats_S9 =
         total_no_of_PH_Seats_in_PG - (PH_Seats_M1 + PH_Seats_M3)
 
       //M1, M3, S9 :BPL
-      const BPL_Seats_M1 = Math.round(total_no_of_BPL_Seats_in_PG / 3)
-      const BPL_Seats_M3 = Math.round(total_no_of_BPL_Seats_in_PG / 3)
+      const BPL_Seats_M1 = Math.floor(total_no_of_BPL_Seats_in_PG / 3)
+      const BPL_Seats_M3 = Math.floor(total_no_of_BPL_Seats_in_PG / 3)
       const BPL_Seats_S9 =
         total_no_of_BPL_Seats_in_PG - (BPL_Seats_M1 + BPL_Seats_M3)
 
@@ -372,8 +373,8 @@ router.post('/allocate', async (req, res) => {
           const studentEligibleForCategory = newUpdatedStudents.filter(
             (student) =>
               student.sem === semester &&
-              (student.quota == [category] + '_APL' ||
-                student.quota == [category] + '_BPL') &&
+              (student.quota == [category] + '-APL' ||
+                student.quota == [category] + '-BPL') &&
               !student.allotted
           )
 
