@@ -28,7 +28,6 @@ router.post('/allocate', async (req, res) => {
 
     const allotmentValues = req.body.AllotmentValuesForCalculation
     const { MH, LH } = allotmentValues
-    const HostelTypes = ['MH', 'LH']
 
     const newAllotment = await allotmentModel.create({
       AllotmentValuesForCalculation: {
@@ -41,20 +40,25 @@ router.post('/allocate', async (req, res) => {
 
     //Id of the newly created allotment
     const AllotmentId = newAllotment._id
-    let seatDataUGMH = {}
-    let seatDataPGMH = {}
 
+    const HostelTypes = ['MH', 'LH']
+
+    let seatDataUGMH = {}
     let seatDataUGLH = {}
+
+    let seatDataPGMH = {}
     let seatDataPGLH = {}
 
-    //? Calculation of Seats for MH
+
+
+    //? Calculation of Seats for UG and PG
 
     for (const hostel_type of HostelTypes) {
       let total_SC_ST_PH_BPL_seats = 0
 
       if (hostel_type === 'MH') {
         total_SC_ST_PH_BPL_seats = MH.SC_ST_PH_BPL.totalSeats
-      } else {
+      } else if (hostel_type === 'LH') {
         total_SC_ST_PH_BPL_seats = LH.SC_ST_PH_BPL.totalSeats
       }
 
@@ -174,7 +178,7 @@ router.post('/allocate', async (req, res) => {
         }
       }
 
-      //PG
+    //PG
       const PGSeats = hostel_type == 'MH' ? MH.PG.totalSeats : LH.PG.totalSeats
 
       const total_no_of_SC_Seats_in_PG = Math.round(
