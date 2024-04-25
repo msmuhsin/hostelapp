@@ -30,7 +30,25 @@ const allotmentSchema = new mongoose.Schema({
   },
   MH: {
     S1: {
-      SC_ST_PH_BPL: [
+      SC: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      ST: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      PH: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      BPL: [
         {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Student',
@@ -44,7 +62,25 @@ const allotmentSchema = new mongoose.Schema({
       ],
     },
     S3: {
-      SC_ST_PH_BPL: [
+      SC: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      ST: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      PH: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      BPL: [
         {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Student',
@@ -59,7 +95,25 @@ const allotmentSchema = new mongoose.Schema({
     },
 
     S5: {
-      SC_ST_PH_BPL: [
+      SC: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      ST: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      PH: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      BPL: [
         {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Student',
@@ -73,7 +127,25 @@ const allotmentSchema = new mongoose.Schema({
       ],
     },
     S7: {
-      SC_ST_PH_BPL: [
+      SC: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      ST: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      PH: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      BPL: [
         {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Student',
@@ -87,7 +159,25 @@ const allotmentSchema = new mongoose.Schema({
       ],
     },
     S9: {
-      SC_ST_PH_BPL: [
+      SC: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      ST: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      PH: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      BPL: [
         {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Student',
@@ -101,7 +191,25 @@ const allotmentSchema = new mongoose.Schema({
       ],
     },
     M1: {
-      SC_ST_PH_BPL: [
+      SC: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      ST: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      PH: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      BPL: [
         {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Student',
@@ -115,7 +223,25 @@ const allotmentSchema = new mongoose.Schema({
       ],
     },
     M2: {
-      SC_ST_PH_BPL: [
+      SC: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      ST: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      PH: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Student',
+        },
+      ],
+      BPL: [
         {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Student',
