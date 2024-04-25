@@ -2,30 +2,59 @@ import mongoose from 'mongoose'
 
 const allotmentSchema = new mongoose.Schema({
   AllotmentValuesForCalculation: {
-    vacancyAvailable: Number,
-    SC_ST_PH_BPL: {
-      percentage: Number,
-      totalSeats: Number,
+    MH: {
+      vacancyAvailable: Number,
+      SC_ST_PH_BPL: {
+        percentage: Number,
+        totalSeats: Number,
+      },
+      S1: {
+        percentage: Number,
+        totalSeats: Number,
+      },
+      S3: {
+        percentage: Number,
+        totalSeats: Number,
+      },
+      S5: {
+        percentage: Number,
+        totalSeats: Number,
+      },
+      S7: {
+        percentage: Number,
+        totalSeats: Number,
+      },
+      PG: {
+        percentage: Number,
+        totalSeats: Number,
+      },
     },
-    S1: {
-      percentage: Number,
-      totalSeats: Number,
-    },
-    S3: {
-      percentage: Number,
-      totalSeats: Number,
-    },
-    S5: {
-      percentage: Number,
-      totalSeats: Number,
-    },
-    S7: {
-      percentage: Number,
-      totalSeats: Number,
-    },
-    PG: {
-      percentage: Number,
-      totalSeats: Number,
+    LH: {
+      vacancyAvailable: Number,
+      SC_ST_PH_BPL: {
+        percentage: Number,
+        totalSeats: Number,
+      },
+      S1: {
+        percentage: Number,
+        totalSeats: Number,
+      },
+      S3: {
+        percentage: Number,
+        totalSeats: Number,
+      },
+      S5: {
+        percentage: Number,
+        totalSeats: Number,
+      },
+      S7: {
+        percentage: Number,
+        totalSeats: Number,
+      },
+      PG: {
+        percentage: Number,
+        totalSeats: Number,
+      },
     },
   },
   MH: {
