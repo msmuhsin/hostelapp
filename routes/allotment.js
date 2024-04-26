@@ -15,7 +15,6 @@ function allocateStudents(students, seats) {
 
 function calculateSemesterSeatDistribution(totalSeats) {
   const seatsPerSemester = Math.floor(totalSeats / 5);
-
   const seatDistribution = {
     S1: seatsPerSemester,
     S3: seatsPerSemester,
