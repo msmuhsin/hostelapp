@@ -60,13 +60,18 @@ const studentSchema = new mongoose.Schema({
     type: Number,
   },
   roomNo: {
-    type: Number,
+    type: String,
+    default: '',
   },
   allotted: {
     type: Boolean,
     default: false,
   },
   dataError: {
+    type: Boolean,
+    default: false,
+  },
+  studentRemovedFromList: {
     type: Boolean,
     default: false,
   },
@@ -95,7 +100,6 @@ studentSchema.pre('save', async function (next) {
     next(error)
   }
 })
-
 
 const Student = mongoose.model('Student', studentSchema)
 export default Student

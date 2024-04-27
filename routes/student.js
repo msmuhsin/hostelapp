@@ -193,9 +193,6 @@ router.get('/', async (req, res) => {
     res.status(500).json({ message: error.message, success: false })
   }
 
-  
- 
-
   // for (let i = 0; i < allStudents.length; i++) {
   //   const StudentData = allStudents[i]
   //   const studentScore = calculateScore(StudentData)
@@ -209,6 +206,18 @@ router.get('/', async (req, res) => {
   //     console.log(updateStudent)
   //   }
   // }
+})
+
+router.get('/studentAllotment/delete', async (req, res) => {
+  try {
+    await studentModel.updateMany({}, { $set: { allotted: false } })
+
+    res
+      .status(200)
+      .json({ message: 'All students are unalloted', success: true })
+  } catch (error) {
+    res.status(500).json({ message: error.message, success: false })
+  }
 })
 
 export default router

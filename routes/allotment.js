@@ -5,7 +5,6 @@ import studentModel from '../models/student.js'
 const router = express.Router()
 
 function allocateStudents(students, seats) {
-  students.sort((a, b) => a.score - b.score)
   const allocatedStudents = students.slice(0, seats)
   allocatedStudents.forEach((student) => {
     student.allotted = true
@@ -14,7 +13,7 @@ function allocateStudents(students, seats) {
 }
 
 function calculateSemesterSeatDistribution(totalSeats) {
-  const seatsPerSemester = Math.floor(totalSeats / 5);
+  const seatsPerSemester = Math.floor(totalSeats / 5)
   const seatDistribution = {
     S1: seatsPerSemester,
     S3: seatsPerSemester,
@@ -38,14 +37,51 @@ function calculateCategorySeatDistribution(totalSeats) {
 
 router.get('/', async (req, res) => {
   try {
-    const allotment = await allotmentModel.find()
-    res.send(allotment)
+    const latestAllotment = await allotmentModel
+      .findOne()
+      .sort({ createdAt: -1 })
+
+    if (latestAllotment) {
+      const allotmentData = {}
+
+      const sections = ['MH', 'LH']
+      const semesters = ['S1', 'S3', 'S5', 'S7', 'S9', 'M1', 'M3']
+      const categories = ['SC', 'ST', 'PH', 'BPL', 'General']
+
+      for (const section of sections) {
+        allotmentData[section] = {}
+
+        for (const semester of semesters) {
+          allotmentData[section][semester] = {}
+          for (const category of categories) {
+            if (
+              latestAllotment[section][semester] &&
+              latestAllotment[section][semester][category] &&
+              latestAllotment[section][semester][category].length > 0
+            ) {
+              const students = await studentModel.find({
+                _id: { $in: latestAllotment[section][semester][category] },
+              })
+
+              allotmentData[section][semester][category] = students
+            }
+          }
+        }
+      }
+
+      console.log(JSON.stringify(allotmentData, null, 2))
+
+      res.json(allotmentData)
+    } else {
+      res.status(404).send('No allotment found.') // Send a 404 status code if no allotment is found
+    }
   } catch (error) {
+    console.error(error) // Log the error
     res.status(500).send('Error while getting list of allotment from database')
   }
 })
 
-router.post('/allocate', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     // Get all students in descending order of score
 
@@ -134,8 +170,6 @@ router.post('/allocate', async (req, res) => {
       const ST_Seats_S7 = seatData_S7.ST
       const BPL_Seats_S7 = seatData_S7.BPL
 
-
-
       if (hostel_type === 'MH') {
         seatDataUGMH = {
           S1: {
@@ -213,7 +247,10 @@ router.post('/allocate', async (req, res) => {
         total_no_SC_ST_PH_BPL_of_PG / 4
       )
       const total_no_of_BPL_Seats_in_PG =
-        total_no_SC_ST_PH_BPL_of_PG - (ST_Seats_PG + PH_Seats_PG + SC_Seats_PG)
+        total_no_SC_ST_PH_BPL_of_PG -
+        (total_no_of_SC_Seats_in_PG +
+          total_no_of_PH_Seats_in_PG +
+          total_no_of_ST_Seats_in_PG)
 
       const M1_Seats = Math.floor(PGSeats / 3)
       const M3_Seats = Math.floor(PGSeats / 3)
@@ -295,89 +332,35 @@ router.post('/allocate', async (req, res) => {
       }
     }
 
+    console.log({
+      'seatDataUG_MH : ': seatDataUGMH,
+      'seatDataUG_LH : ': seatDataUGLH,
+      'seatDataPG_MH : ': seatDataPGMH,
+      'seatDataPG_LH : ': seatDataPGMH,
+    })
+
+    // return res.send('Allotment done successfully')
+
     //? Allocation Of Seats for UG
+
     const All_Semesters = ['S1', 'S3', 'S5', 'S7', 'M1', 'M3', 'S9']
     const categories = ['SC', 'ST', 'PH', 'BPL']
 
-    for (const hostel_type of HostelTypes) {
-      for (const semester of All_Semesters) {
-        const students = await studentModel.find().sort({ score: -1 })
-
-        let semesterSeatsGeneral = 0
-
-        if (
-          semester === 'S1' ||
-          semester === 'S3' ||
-          semester === 'S5' ||
-          semester === 'S7'
-        ) {
-          if (hostel_type === 'MH') {
-            semesterSeatsGeneral = seatDataUGMH[semester].General
-          } else if (hostel_type === 'LH') {
-            semesterSeatsGeneral = seatDataUGLH[semester].General
-          }
-        } else if (
-          semester === 'M1' ||
-          semester === 'M3' ||
-          semester === 'S9'
-        ) {
-          if (hostel_type === 'MH') {
-            semesterSeatsGeneral = seatDataPGMH[semester].General
-          } else if (hostel_type === 'LH') {
-            semesterSeatsGeneral = seatDataPGLH[semester].General
-          }
-        }
-
-        const studentsInSemester = students.filter(
-          (student) => student.sem === semester && !student.allotted
-        )
-
-        const allottedStudents = allocateStudents(
-          studentsInSemester,
-          semesterSeatsGeneral
-        )
-
-        const allottedStudentIds = allottedStudents.map(
-          (student) => student._id
-        )
-
-        // Update 'allotted' status for students
-        await studentModel.updateMany(
-          { _id: { $in: allottedStudentIds } },
-          { allotted: true }
-        )
-
-        // Create or update allotment document
-        const updateQuery = {
-          [hostel_type]: {
-            [semester]: {
-              General: allottedStudentIds,
-            },
-          },
-        }
-
-        const updatedAllotment = await allotmentModel.findOneAndUpdate(
-          { _id: AllotmentId },
-          updateQuery,
-          { new: true }
-        )
-
-        await updatedAllotment.save()
-
-        for (const category of categories) {
-          const newUpdatedStudents = await studentModel
-            .find()
+    async function allotment() {
+      for (const hostel_type of HostelTypes) {
+        for (const semester of All_Semesters) {
+          const students = await studentModel
+            .find({
+              sem: semester,
+              gender: hostel_type === 'MH' ? 'Male' : 'Female',
+            })
             .sort({ score: -1 })
 
-          const studentEligibleForCategory = newUpdatedStudents.filter(
-            (student) =>
-              student.sem === semester &&
-              (student.quota == [category] + '-APL' ||
-                student.quota == [category] + '-BPL') &&
-              !student.allotted
-          )
+          if (students.length === 0) {
+            continue
+          }
 
-          let categorySeats = 0
+          let semesterSeatsGeneral = 0
 
           if (
             semester === 'S1' ||
@@ -386,9 +369,9 @@ router.post('/allocate', async (req, res) => {
             semester === 'S7'
           ) {
             if (hostel_type === 'MH') {
-              categorySeats = seatDataUGMH[semester][category]
-            } else {
-              categorySeats = seatDataUGLH[semester][category]
+              semesterSeatsGeneral = seatDataUGMH[semester].General
+            } else if (hostel_type === 'LH') {
+              semesterSeatsGeneral = seatDataUGLH[semester].General
             }
           } else if (
             semester === 'M1' ||
@@ -396,48 +379,159 @@ router.post('/allocate', async (req, res) => {
             semester === 'S9'
           ) {
             if (hostel_type === 'MH') {
-              categorySeats = seatDataPGMH[semester][category]
-            } else {
-              categorySeats = seatDataPGLH[semester][category]
+              semesterSeatsGeneral = seatDataPGMH[semester].General
+            } else if (hostel_type === 'LH') {
+              semesterSeatsGeneral = seatDataPGLH[semester].General
             }
           }
 
+          const studentsInSemester = students.filter(
+            (student) => student.sem === semester && !student.allotted
+          )
+
           const allottedStudents = allocateStudents(
-            studentEligibleForCategory,
-            categorySeats
+            studentsInSemester,
+            semesterSeatsGeneral
           )
 
           const allottedStudentIds = allottedStudents.map(
             (student) => student._id
           )
 
-          // Update 'allotted' status for eligible students in the category
+          // Update 'allotted' status for students
           await studentModel.updateMany(
             { _id: { $in: allottedStudentIds } },
             { allotted: true }
           )
 
           // Create or update allotment document
-          const updateQuery = {
-            [hostel_type]: {
-              [semester]: {
-                [category]: allottedStudentIds,
+
+          // const updateQuery = {
+          //   [hostel_type]: {
+          //     [semester]: {
+          //       General: allottedStudentIds,
+          //     },
+          //   },
+          // }
+
+          // const updatedAllotment = await allotmentModel.findByIdAndUpdate
+          const updatedAllotment = await allotmentModel.findByIdAndUpdate(
+            AllotmentId,
+            {
+              $set: {
+                [`${hostel_type}.${semester}.General`]: allottedStudentIds,
               },
             },
-          }
-
-          const updatedAllotment = await allotmentModel.findOneAndUpdate(
-            { _id: AllotmentId },
-            updateQuery,
             { new: true }
           )
 
           await updatedAllotment.save()
+
+          for (const category of categories) {
+            const newUpdatedStudents = await studentModel
+              .find({
+                sem: semester,
+                gender: hostel_type === 'MH' ? 'Male' : 'Female',
+              })
+              .sort({ score: -1 })
+
+            if (newUpdatedStudents.length === 0) {
+              continue
+            }
+
+            let studentsEligibleForCategory
+
+            if (category === 'ST' || category === 'SC' || category === 'PH') {
+              studentsEligibleForCategory = newUpdatedStudents.filter(
+                (student) =>
+                  student.sem === semester &&
+                  (student.quota == [category] + '-APL' ||
+                    student.quota == [category] + '-BPL') &&
+                  !student.allotted
+              )
+            } else if (category === 'BPL') {
+              //get all quota where qutoa == -BPL at the end and student is not allotted and sem is same
+              studentsEligibleForCategory = newUpdatedStudents.filter(
+                (student) =>
+                  student.sem === semester &&
+                  student.quota.slice(-3) === 'BPL' &&
+                  !student.allotted
+              )
+            }
+
+            // return res.send('Allotment done successfully')
+
+            let categorySeats = 0
+
+            if (
+              semester === 'S1' ||
+              semester === 'S3' ||
+              semester === 'S5' ||
+              semester === 'S7'
+            ) {
+              if (hostel_type === 'MH') {
+                categorySeats = seatDataUGMH[semester][category]
+              } else {
+                categorySeats = seatDataUGLH[semester][category]
+              }
+            } else if (
+              semester === 'M1' ||
+              semester === 'M3' ||
+              semester === 'S9'
+            ) {
+              if (hostel_type === 'MH') {
+                categorySeats = seatDataPGMH[semester][category]
+              } else {
+                categorySeats = seatDataPGLH[semester][category]
+              }
+            }
+
+            const allottedStudentsCategoryWise = allocateStudents(
+              studentsEligibleForCategory,
+              categorySeats
+            )
+
+            const allottedStudentIdsCategoryWise =
+              allottedStudentsCategoryWise.map((student) => student._id)
+
+            // // Update 'allotted' status for eligible students in the category
+            await studentModel.updateMany(
+              { _id: { $in: allottedStudentIdsCategoryWise } },
+              { allotted: true }
+            )
+
+            // // Create or update allotment document
+
+            const updatedAllotmentCategoryWise =
+              await allotmentModel.findByIdAndUpdate(
+                AllotmentId,
+                {
+                  $set: {
+                    [`${hostel_type}.${semester}.${category}`]:
+                      allottedStudentIdsCategoryWise,
+                  },
+                },
+                { new: true }
+              )
+
+            await updatedAllotmentCategoryWise.save()
+          }
         }
       }
     }
+
+    await allotment()
+      .then(async () => {
+        res.send({ message: 'Allotment done successfully', success: true })
+      })
+      .catch((error) => {
+        console.error(error)
+        res.status(500).send('Error while allocating room')
+      })
   } catch (error) {
     console.error(error)
     res.status(500).send('Error while allocating room')
   }
 })
+
+export default router
