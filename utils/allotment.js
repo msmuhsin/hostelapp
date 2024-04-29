@@ -60,16 +60,10 @@ async function handleAllotment(
         }
       }
 
-      console.log(students)
-
       const studentsInSemester = students.filter(
         (student) => student.sem === semester && !student.allotted
       )
 
-      console.log(studentsInSemester)
-      console.log(semesterSeatsGeneral)
-
-      return
 
       const allottedStudents = allocateStudents(
         studentsInSemester,
