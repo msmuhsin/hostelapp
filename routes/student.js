@@ -185,6 +185,43 @@ router.put('/:id', async (req, res) => {
   }
 })
 
+router.put('/roomallocation/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+
+    if (!id) {
+      return res
+        .status(400)
+        .json({ message: 'Student id is required', success: false })
+    }
+
+    const { RoomNo } = req.body
+
+    if (!RoomNo) {
+      return res
+        .status(400)
+        .json({ message: 'Room number is required', success: false })
+    }
+
+    const updatedStudent = await studentModel.findByIdAndUpdate(id, {
+      roomNo: RoomNo,
+    })
+
+
+    if (!updatedStudent) {
+      return res
+        .status(400)
+        .json({ message: 'Student not found', success: false })
+    }
+
+    res
+      .status(200)
+      .json({ message: 'Student updated successfully', success: true })
+  } catch (error) {
+    res.status(500).json({ message: error.message, success: false })
+  }
+})
+
 router.get('/', async (req, res) => {
   try {
     const allStudents = await studentModel.find({})
@@ -210,7 +247,10 @@ router.get('/', async (req, res) => {
 
 router.get('/studentAllotment/delete', async (req, res) => {
   try {
-    await studentModel.updateMany({}, { $set: { allotted: false } })
+    await studentModel.updateMany(
+      {},
+      { $set: { allotted: false, studentRemovedFromList: false, roomNo: '' } }
+    )
 
     res
       .status(200)

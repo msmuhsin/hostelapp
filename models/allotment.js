@@ -2,6 +2,10 @@ import mongoose from 'mongoose'
 
 const allotmentSchema = new mongoose.Schema(
   {
+    AllotmentNo: {
+      type: Number,
+      required: true,
+    },
     AllotmentValuesForCalculation: {
       MH: {
         vacancyAvailable: Number,
