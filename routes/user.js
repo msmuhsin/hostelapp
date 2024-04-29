@@ -1,5 +1,5 @@
 import express from 'express'
-import jwt, { decode } from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import userModel from '../models/user.js'
 
 const router = express.Router()

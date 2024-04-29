@@ -4,6 +4,8 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import studentRoutes from './routes/student.js'
 import userRoutes from './routes/user.js'
+import allotmentRoutes from './routes/allotment.js'
+import allotmentSetRoutes from './routes/allotmentSet.js'
 dotenv.config()
 
 const app = express()
@@ -23,6 +25,8 @@ app.use(express.json())
 
 app.use('/student', studentRoutes)
 app.use('/user', userRoutes)
+app.use('/allotment', allotmentRoutes)
+app.use('/allotmentset', allotmentSetRoutes)
 
 app.get('/', (req, res) => {
   res.send('helloworld')
