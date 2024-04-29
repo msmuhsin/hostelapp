@@ -1,26 +1,117 @@
-import express from 'express'
-import seatsModel from '../models/seats.js'
+import mongoose from 'mongoose'
 
-const router = express.Router()
-
-router.get('/id', async (req, res) => {
-  try {
-    if (!req.params.id) {
-      res
-        .status(400)
-        .json({ success: false, message: 'Allotment id not provided' })
-    }
-
-    const seat = await seatsModel.find({ allotmentId: req.params.id })
-
-    if (!seat) {
-      res.status(404).json({ success: false, message: 'Seat not found' })
-    } else {
-      res.status(200).json({ success: true, seat })
-    }
-  } catch (err) {
-    res.status(500).json({ message: err.message })
-  }
+const seatSchema = new mongoose.Schema({
+  allotmentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Allotment',
+    required: true,
+  },
+  seats: {
+    MH: {
+      S1: {
+        General: Number,
+        SC: Number,
+        ST: Number,
+        PH: Number,
+        BPL: Number,
+      },
+      S3: {
+        General: Number,
+        SC: Number,
+        ST: Number,
+        PH: Number,
+        BPL: Number,
+      },
+      S5: {
+        General: Number,
+        SC: Number,
+        ST: Number,
+        PH: Number,
+        BPL: Number,
+      },
+      S7: {
+        General: Number,
+        SC: Number,
+        ST: Number,
+        PH: Number,
+        BPL: Number,
+      },
+      S9: {
+        General: Number,
+        SC: Number,
+        ST: Number,
+        PH: Number,
+        BPL: Number,
+      },
+      M1: {
+        General: Number,
+        SC: Number,
+        ST: Number,
+        PH: Number,
+        BPL: Number,
+      },
+      M3: {
+        General: Number,
+        SC: Number,
+        ST: Number,
+        PH: Number,
+        BPL: Number,
+      },
+    },
+    LH: {
+      S1: {
+        General: Number,
+        SC: Number,
+        ST: Number,
+        PH: Number,
+        BPL: Number,
+      },
+      S3: {
+        General: Number,
+        SC: Number,
+        ST: Number,
+        PH: Number,
+        BPL: Number,
+      },
+      S5: {
+        General: Number,
+        SC: Number,
+        ST: Number,
+        PH: Number,
+        BPL: Number,
+      },
+      S7: {
+        General: Number,
+        SC: Number,
+        ST: Number,
+        PH: Number,
+        BPL: Number,
+      },
+      S9: {
+        General: Number,
+        SC: Number,
+        ST: Number,
+        PH: Number,
+        BPL: Number,
+      },
+      M1: {
+        General: Number,
+        SC: Number,
+        ST: Number,
+        PH: Number,
+        BPL: Number,
+      },
+      M3: {
+        General: Number,
+        SC: Number,
+        ST: Number,
+        PH: Number,
+        BPL: Number,
+      },
+    },
+  },
 })
 
-export default router
+const Seat = mongoose.model('Seat', seatSchema)
+
+export default Seat
